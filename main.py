@@ -23,7 +23,7 @@ dp = Dispatcher(bot)
 contex_history = {}
 
 
-#model = 'text-davinci-003'
+model = 'text-davinci-003'
 
 models = {
     'gpt3.5': 'gpt-3.5-turbo',
@@ -92,7 +92,7 @@ async def generate_response(text):
     max_tokens = 1024
     # Запрос
     response = openai.Completion.create(
-        model=current_model,
+        model=model,
         prompt=prompt,
         temperature=0.9,
         max_tokens=1000,
