@@ -3,7 +3,10 @@ import openai
 from aiogram import Bot, Dispatcher
 from aiogram.utils import executor
 from settings import API_KEY, BOT_KEY
-
+import settings
+import csv
+import telebot
+import re
 
 logging.basicConfig(level=logging.INFO)
 
@@ -72,7 +75,7 @@ def handle_message(message):
     stop=[" Human:", " AI:"]
   )
     reply = response['choices'][0]['text']
-    bot.send_message(chat_id=message.from_user.id,text=reply)
+   # bot.send_message(chat_id=message.from_user.id,text=reply)
 
 
 if __name__ == '__main__':
