@@ -45,4 +45,63 @@ def help(message):
 
 
 
+@dp.message_handler(lambda message: True)
+async def handle_message(message):
+    
+    user_id = message.chat.id
 
+    
+    spam = 'Dont Spam please wait Some second'
+
+    
+    if contex_history.get(user_id) == None:
+
+        
+        response = await generate_response(message.text)
+
+       
+        contex_history[user_id] = [message.text]
+    else:
+
+        contex_history[user_id] += [message.text]
+        len_history = len(contex_history[user_id])
+
+        
+        if len_history > 1:
+
+            
+            if contex_history[user_id][-1].lower().strip() == contex_history[user_id][-2].lower().strip():
+                del contex_history[user_id][-1]
+                await bot.send_message(chat_id=user_id, reply_to_message_id=message.message_id, text=spam)
+                return
+
+                
+        if len(contex_history[user_id]) > 9:
+            del contex_history[user_id][0]
+
+        
+        response = await generate_response(message.text + ' ' + '\n'.join(contex_history.get(user_id)))
+
+    if response['text']:
+        await bot.send_message(chat_id=user_id, reply_to_message_id=message.message_id, text=response['text'])
+
+
+
+async def generate_response(text):
+    prompt = f"{text}"
+    max_tokens = 1024
+    # Запрос
+    response = openai.Completion.create(
+        model=current_model,
+        prompt=prompt,
+        temperature=0.9,
+        max_tokens=1000,
+        top_p=1.0,
+        frequency_penalty=0.5,
+        presence_penalty=0.0,
+    )
+    return {'text': response.choices[0].text}
+
+
+if __name__ == '__main__':
+    executor.start_polling(dp)
