@@ -92,7 +92,7 @@ async def generate_response(text):
     max_tokens = 1024
     # Запрос
     response = openai.Completion.create(
-        model=current_model,
+        model=models,
         prompt=prompt,
         temperature=0.9,
         max_tokens=1000,
