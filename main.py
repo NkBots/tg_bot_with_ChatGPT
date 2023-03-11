@@ -30,7 +30,7 @@ models = {
     'dav3': 'text-davinci-003'
 }
 
-current_model = 'gpt3.5'
+current_model = 'gpt-3.5-turbo'
 
 @dp.message_handler(commands=['help'])
 async def help(message):
@@ -92,7 +92,7 @@ async def generate_response(text):
     max_tokens = 1024
     # Запрос
     response = openai.Completion.create(
-        model=models,
+        model=current_model,
         prompt=prompt,
         temperature=0.9,
         max_tokens=1000,
