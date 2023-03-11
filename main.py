@@ -35,7 +35,7 @@ def help(message):
   For dev3, there is a temperature setting (/temp) from 0 to 1. The higher the temperature, the less formal text the model produces. If the value is high, there may be factual errors!""")
 
 
-@bot.message_handler(commands=['start'])
+@dp.message_handler(commands=['start'])
 def help(message):
   bot.send_message(message.chat.id, f"""I am AI Bot Developed By @NitinSahay for private use Only""")
 
