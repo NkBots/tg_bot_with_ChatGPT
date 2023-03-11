@@ -46,63 +46,33 @@ def help(message):
 
 
 
+messages = [{"role": "system", "content": "You are a helpful assistant."},]
 
-@dp.message_handler(lambda message: True)
-async def handle_message(message):
-    # id пользователя
-    user_id = message.chat.id
-
-    
-    spam = 'Dont Spam please wait 250 sec'
-
-   
-    if contex_history.get(user_id) == None:
-
-        
-        response = await generate_response(message.text)
-
-       
-        contex_history[user_id] = [message.text]
-    else:
-
-        contex_history[user_id] += [message.text]
-        len_history = len(contex_history[user_id])
-
-        
-        if len_history > 1:
-
-            
-            if contex_history[user_id][-1].lower().strip() == contex_history[user_id][-2].lower().strip():
-                del contex_history[user_id][-1]
-                await bot.send_message(chat_id=user_id, reply_to_message_id=message.message_id, text=spam)
-                return
-
-                
-        if len(contex_history[user_id]) > 9:
-            del contex_history[user_id][0]
-
-        
-        response = await generate_response(message.text + ' ' + '\n'.join(contex_history.get(user_id)))
-
-    if response['text']:
-        await bot.send_message(chat_id=user_id, reply_to_message_id=message.message_id, text=response['text'])
-
-
-
-async def generate_response(text):
-    prompt = f"{text}"
-    max_tokens = 1024
-    
-    response = openai.Completion.create(
-        model=model,
-        prompt=prompt,
-        temperature=0.5,
-        max_tokens=1000,
-        top_p=1.0,
-        frequency_penalty=0.5,
-        presence_penalty=0.0,
+@dp.message_handler(func=lambda _:True)
+def handle_message(message):
+  if current_model == 'gpt3.5':
+    message_dict = {"role": "user", "content": message.text }
+    messages.append(message_dict)
+    response = openai.ChatCompletion.create(
+      model="gpt-3.5-turbo", 
+      messages=messages
     )
-    return {'text': response.choices[0].text}
+    reply = response.choices[0].message.content #response['choices'][0]['text']
+    bot.send_message(chat_id=message.from_user.id,text=reply)
+    messages.append({"role": "assistant", "content": reply})
+  elif current_model == 'dav3':
+    response = openai.Completion.create(
+    model="text-davinci-003",
+    prompt=message.text, 
+    temperature=temp,       
+    max_tokens=1000,       
+    top_p=1,                
+    frequency_penalty=0.0,  
+    presence_penalty=0.6,   
+    stop=[" Human:", " AI:"]
+  )
+    reply = response['choices'][0]['text']
+    bot.send_message(chat_id=message.from_user.id,text=reply)
 
 
 if __name__ == '__main__':
