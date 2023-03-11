@@ -20,9 +20,14 @@ dp = Dispatcher(bot)
 contex_history = {}
 
 
-model = 'text-davinci-003'
+#model = 'text-davinci-003'
 
+models = {
+    'gpt3.5': 'gpt-3.5-turbo',
+    'dav3': 'text-davinci-003'
+}
 
+current_model = 'gpt3.5'
 
 @dp.message_handler(commands=['help'])
 def help(message):
