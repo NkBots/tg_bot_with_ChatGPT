@@ -26,7 +26,7 @@ model = 'text-davinci-003'
 # Хэндлер на команду /start
 @dp.message_handler(commands=['start'])
 async def start(message):
-    if message['language_code'] == 'ru':
+    if message['language_code'] == 'en':
         await bot.send_message(
             chat_id=message.from_user.id,
             text=f'Привет {message.from_user.first_name}. Я отвечу практически на любой твой вопрос. Что ты хочешь узнать?'
@@ -45,7 +45,7 @@ async def handle_message(message):
 
     # Сообщение при повторной отправке запроса
     spam = 'Не надо спамить, просто немного подожди. Запрос обрабатывается...' \
-        if message.from_user.language_code == 'ru' \
+        if message.from_user.language_code == 'en' \
         else 'Don`t spam, just relax and wait...'
 
     # Проверяем есть были ли сообщения от пользователя
